@@ -1,0 +1,136 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+  
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.2/socket.io.js"></script>
+<script src="{{url_for('static', filename='js/songList.js')}}"></script>
+
+
+
+<div class="row d-flex justify-content-md-center vh100">
+    <div class="tablascr align-self-center">
+      <table class="table table-dark table-hover tabla mt-2">
+        <tbody class="tabla-body">
+         <h4 class="d-flex justify-content-md-center text-light mt-2">Canciones</h4>
+        </tbody>       
+            <!-- Playlist Item -->
+          <!-- <div class="playlist-div imagediv">-->
+              <!-- <div class="playlist-s">
+                <span class="song-index">1</span>
+                <td><p class="single-song text-light">Song one</p>
+              </div></td>-->
+            <!--</div>-->
+            
+      </table>
+    </div>
+  </div>
+
+<script>
+
+let albumName;
+  socket.on("message", (msg) => {
+    albumName = msg;
+    console.log(albumName)
+  });
+
+  
+
+    var dups = [];
+    var arr = listSongs.filter(function(el){
+      if (dups.indexOf(el.titulo) == -1) {
+        dups.push(el.titulo);
+        return true;
+      }
+      return false;
+    });
+
+    function displaySongs() {
+      let counters = 1;
+      let pDivv = document.querySelector(".tabla-body");
+      for (let i = 0; i < arr.length; i++){
+        if (arr[i].album == albumName){
+          //console.log(arr[i].titulo);
+                  //let divv = document.createElement("tbody");
+          let diva = document.createElement("tr");
+                  //div.classList.add("playlist-s");
+          diva.classList.add("playlist-sr");
+          diva.innerHTML = `
+              <th class="song-index">${counters++}</th>
+              <td class="single-song">${arr[i].titulo}</td>
+          `;
+          pDivv.appendChild(diva);
+        }
+        
+      }
+      playFromPlaylists();
+      //
+      
+    }
+    displaySongs();
+  
+  
+ /*   
+        // Array to keep track of duplicates
+        socket.on("message", (msg) => {
+          let albumName;
+            albumName = msg;
+            console.log(albumName);
+        // Array to keep track of duplicate
+         var dups = [];
+        var arr = listSongs.filter(function(el) {
+        // If it is not a duplicate, return true
+        if (dups.indexOf(el.titulo) == -1) {
+            dups.push(el.titulo);
+            
+            return true;
+        }       
+        return false;
+        });
+       
+        function displaySongs() {
+          
+            let counters = 1;
+            let pDivv = document.querySelector(".tabla-body");
+            for (let i = 0; i < arr.length; i++) {
+                
+                if (arr[i].album == albumName){
+                  console.log(arr[i].titulo);
+                  //let divv = document.createElement("tbody");
+                  let diva = document.createElement("tr");
+                  //div.classList.add("playlist-s");
+                  diva.classList.add("playlist-sr");
+                  diva.innerHTML = `
+                      <th class="song-index">${counters++}</th>
+                      <td class="single-song">${arr[i].titulo}</td>
+                  `;
+                  pDivv.appendChild(diva);
+                  }          
+                  
+             };
+             
+             playFromPlaylist()
+       
+       
+        displaySongs(); 
+        
+        function playFromPlaylist() {
+    pDivv.addEventListener("click", (e) => {
+      if (e.target.classList.contains("single-song")) {
+        //alert(e.target.innerHTML);
+        const indexNum = listSongs.findIndex((item, index) => {
+          if (item.titulo === e.target.innerHTML) {
+            return true;
+          }
+        });
+        console.log(indexNum + "asda");
+        //loadTrack(indexNum);
+        //indexTrack = indexNum;
+        //console.log(indexTrack);
+        //playSong();
+        //hidePlayList();
+      }
+   
+
+});*/
+
+
+</script>

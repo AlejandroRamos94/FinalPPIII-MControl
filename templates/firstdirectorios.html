@@ -1,0 +1,39 @@
+{% extends "base_socket.html" %}
+
+{% block title %}Player{% endblock %}
+
+{% block content %}
+<div class="container">
+
+    <hr class="bg-light border-2 border-top border-light">
+    <div class="row">
+        <div class="col-lg-4 col-12 mt-5">
+            <div>
+                
+                <a href="/cds?path=.." class="linksclass"><i class="far fa-arrow-circle-left" style="color:rgb(0, 245, 33);"></i> Atras</a>
+                {% for item in file_list[0: -1] %}
+                {% if '.' not in item%}
+                    <li><strong><a href="/cds?path={{current_working_directory + '/' + item}}" class="linksclass"><i class="fas fa-folder" style="color:rgb(235, 161, 22);"></i>  {{item}}</a></strong></li>
+                {% elif '.txt' in item or '.py' in item or '.json' in item %}
+                    <li style="color:rgb(172, 172, 172);"><i class="fas fa-file"></i>  {{item}}</li>
+                <!--   <li><strong><a href="/view?file={{current_working_directory + '/' + item}}">{{item}}</a></strong></li>--> 
+                {% else %}
+                    <li style="color:rgb(172, 172, 172);"><i class="fas fa-file"></i>  {{item}}</li>
+                {% endif%}
+                {% endfor %}
+            
+            </div>
+        </div>
+        <div class="col-lg-8 col-12 mt-5">
+            <div class="align-self-center">
+                <form method="post">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" value="{{current_working_directory}}" aria-label="Recipient's username" aria-describedby="button-addon2" name="directorio">
+                        <input class="btn btn-outline-success" type="submit" id="button-addon2" value="Seleccionar carpeta"></input>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+  {% endblock %}

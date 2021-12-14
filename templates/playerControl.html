@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player Control</title>
+    <link href="{{url_for('static', filename='css/bootstrap.min.css')}}" rel="stylesheet" type="text/css">
+    <link href="{{url_for('static', filename='css/style.css')}}" rel="stylesheet" type="text/css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
+
+  <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+</head>
+
+<body onload="pedirEstado()">
+<div class="container">
+  <div class="row d-flex justify-content-md-center vh-100">
+    <div class="col-12 col-sm-12 align-self-center">
+      <div class="titulos"></div>
+      <h1 class="text-center text-light titulo"></h1>
+      <h2 class="text-center text-light artista"></h2>
+      <h3 class="text-center text-light album"></h3>
+      
+      <div class="buttons text-center">
+        <button id="prevControl" class="prevControl btnpassong"><i class="fas fa-step-backward" id="iconapp"></i></button>
+        <button id="playControl" class="playControl btncontrol"><i class="fas fa-play" id="iconapp"></i></button>
+        <button id="nextControl" class="nextControl btnpassong"><i class="fas fa-step-forward" id="iconapp"></i></button>
+      </div>
+
+          <div class="volume text-center p-5">
+            <span class="fal fa-volume" aria-hidden="true" id="volume-icon"></span>
+            <input type="range" class="volumeRange" min="0" max="100" value="50" id="volume">
+            <span id="show-volume" class="text-light">50</span>  
+          </div>
+          <div class="d-flex justify-content-md-center divlogoout">
+            <a href="/logout" class="logoutclass">Cerrar sesión</a>
+          </div>
+      </div>
+    </div>
+
+  </div>
+
+    
+
+  
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.2/socket.io.js"></script>
+<script src="{{url_for('static', filename='js/songList.js')}}"></script>
+
+<script>
+  const titulo = document.querySelector(".titulo");
+  const artista = document.querySelector(".artista");
+  const album = document.querySelector(".album");
+  const sockets = io(); //conexion
+  let variable;
+  //const newVol;
+  const showVolume = document.querySelector("#show-volume");
+  const volumeIcon = document.querySelector("#volume-icon");
+  const currentVolume = document.querySelector("#volume");
+
+  currentVolume.addEventListener("change", changeVolume); // cambiar volumen
+
+
+function changeVolume() {
+    showVolume.innerHTML = currentVolume.value;
+    newVol = currentVolume.value;
+    //track.volume = currentVolume.value / 100;
+    sockets.emit("volumeC", newVol);
+}
+
+sockets.on("volumeC", (msg) => {
+  showVolume.innerHTML = msg;
+  currentVolume.value = msg;
+});
+//sockets.emit("volumeC", currentVolume.value);
+ 
+  sockets.on("message", (msg) => {
+    variable = msg;
+    console.log(msg);
+
+});
+
+let songPlay;
+
+
+
+function pedirEstado(){ 
+   	sockets.send('estado Inicial')
+}
+
+sockets.on("receiveData", (msg1,msg2,msg3,msg4) => {
+  console.log(msg1,msg2,msg3,msg4);
+  artista.innerHTML = '<h2 class="text-center text-light artista">'+msg2+'</h2>';
+  album.innerHTML = '<h3 class="text-center text-light album">'+msg3+'</h3>';
+  titulo.innerHTML = '<h1 class="text-center text-light titulo">'+msg1+'</h1>';
+  if (msg4 == false) {
+    play.innerHTML = '<i class="fas fa-play" id="iconapp"></i>';
+    songPlay = false;
+  }else if (msg4 == true) {
+    play.innerHTML = '<i class="fas fa-pause" id="iconapp"></i>';
+    songPlay = true;
+  }
+});
+
+const play = document.querySelector(".playControl");
+const previous = document.querySelector(".prevControl");
+const next = document.querySelector(".nextControl");
+
+
+$('#playControl').on('click',function(){
+    if (variable == 'play') {
+        play.innerHTML = '<i class="fas fa-play" id="iconapp"></i>';
+        sockets.send('pausar');        
+    }else if (variable == 'pause') {
+        play.innerHTML = '<i class="fas fa-pause" id="iconapp"></i>';
+        sockets.send('reproducir');
+    } else if (songPlay == true){
+      play.innerHTML = '<i class="fas fa-pause" id="iconapp"></i>';
+      sockets.send('pausar');
+      
+    } else if (songPlay == false){
+      play.innerHTML = '<i class="fas fa-play" id="iconapp"></i>';
+      sockets.send('reproducir');
+    }
+ });
+
+ $('#nextControl').on('click',function(){
+    sockets.send('siguiente');
+ });
+
+ $('#prevControl').on('click',function(){
+    sockets.send('anterior');
+ });
+
+
+
+</script>
