@@ -7,22 +7,40 @@
 
 
 {% if messje %}
-<h1 class="text-light text-center mt-5">{{messje}}</h1>
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <h1 class="text-light text-center mt-5">{{messje}}</h1>
+    </div>
+  </div>
+</div>
+
 {% elif newmsg %}
-<h1 class="text-light text-center mt-5">{{newmsg}}</h1>
-<a href="/directorios">Agregar</a>
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <h1 class="text-light text-center mt-5">{{newmsg}}</h1>
+    </div>
+    <div class="col-12 d-flex justify-content-md-center">
+      <a href="/directorios" class="btn btn-success btn-controlsa">Seleccionar un directorio</a>
+    </div>
+  </div>
+</div>
+
+
+
 {% else %}
 
 <div class="container-fluid">
   <div class="row">
-    <div class="col-6 d-block d-sm-none">
+    <div class="col-6 d-lg-none d-xl-block d-xl-none d-xxl-block">
       <span class="btndesplegar">
         <i class="fas fa-stream"></i>
       </span>
     </div>
     
     
-    <div class="col-lg-6 col-12 d-none d-sm-block columna" id="contenedorprincipal" >
+    <div class="col-lg-6 col-12 d-none d-sm-block d-sm-none d-md-block d-md-none d-lg-block columna" id="contenedorprincipal" >
       <div class="row d-flex justify-content-md-center vh100">
         <div class="tablascr align-self-center">
           <div class="tabladatos">

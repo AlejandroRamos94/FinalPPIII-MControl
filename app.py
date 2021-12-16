@@ -9,13 +9,20 @@ from sqlalchemy.orm import sessionmaker
 from dbtables import Base, User, Paths
 import random
 import string
+import json
+import httplib2
 import hashlib
+import requests
+
 import os, json
 from tinytag import TinyTag
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
+
+
 
 # Connect to Database and create database session
 engine = create_engine('postgresql://alermpp:ramoscpii@localhost/usuarios')
@@ -24,34 +31,6 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
-"""
-audio = TinyTag.get("/home/alejandro/Proyectos/Practica_Profesional_III/Final/music/Lonely Day.mp3")
-  
-print("Title:" + audio.title)"""
-# --------------------------------------PASSWORD HASH------------------------------[OK]
-"""
-def login_required(f):
-	@wraps(f)
-	def decorated_function(*args, **kwargs):
-		if 'username' not in login_session:
-			return redirect(url_for('login'))
-		return f(*args, **kwargs)
-	return decorated_function
-
-def make_salt():
-	return ''.join(random.choice(
-				string.ascii_uppercase + string.digits) for x in range(32))
-		
-def make_pw_hash(name, pw, salt = None):
-	if not salt:
-		salt = make_salt()
-	h = hashlib.sha256((name + pw + salt).encode('utf-8')).hexdigest()
-	return '%s,%s' % (salt, h)
-
-def valid_pw(name, password, h):
-	salt = h.split(',')[0]
-	return h == make_pw_hash(name, password, salt)
-"""
 
 #-----------------------------INICIAR SESION----------------------[OK]
 
@@ -60,12 +39,12 @@ def login():
 	if request.method == 'GET':
 		state = ''.join(random.choice(
 				string.ascii_uppercase + string.digits) for x in range(32))
-		# store it in session for later use
+		
 		login_session['state'] = state
 		return render_template('login.html', STATE = state)
 	else:
 		if request.method == 'POST':
-			#print ("dentro de POST login")
+			
 			user = session.query(User).filter_by(
 				username = request.form['username']).first()
 
@@ -85,12 +64,12 @@ def contrologin():
 	if request.method == 'GET':
 		state = ''.join(random.choice(
 				string.ascii_uppercase + string.digits) for x in range(32))
-		# store it in session for later use
+		
 		login_session['state'] = state
 		return render_template('loginControl.html', STATE = state)
 	else:
 		if request.method == 'POST':
-			#print ("dentro de POST login")
+			
 			user = session.query(User).filter_by(
 				username = request.form['username']).first()
 
@@ -114,18 +93,27 @@ def registrar():
 		return render_template('register.html')
 	else:
 		if request.method == 'POST':
-			username = request.form['username']
-			password=request.form['password']
-			email = request.form['email']
-			pw_hash = make_pw_hash(username, password)
-			nuevoUsuario = User(
-					username = username,
-					email = email,
-					pw_hash=pw_hash) 
-			session.add(nuevoUsuario)
-			session.commit()
-			login_session['username'] = request.form['username']
-			return redirect(url_for('firstPage'))
+			#Compara las contraseñas, y ve la longitud de la contraseña que se ingresa
+			if request.form['password'] == request.form['repeatpassword']:
+				if len(request.form['password']) <8:
+					return render_template('register.html', errregister = "La contraseña debe tener mas de 8 caracteres")
+				else: 
+					username = request.form['username']
+					password=request.form['password']
+					email = request.form['email']
+					# Hashea el password
+					pw_hash = make_pw_hash(username, password)
+					nuevoUsuario = User(
+							username = username,
+							email = email,
+							pw_hash=pw_hash) 
+					session.add(nuevoUsuario)
+					session.commit()
+					# Agrega un nuevo registro a la base de datos
+					login_session['username'] = request.form['username']
+					return redirect(url_for('firstPage'))
+			else:
+				return render_template('register.html', errregister = "Las contraseñas no coinciden")
 
 @app.route('/logout')
 def logout():
@@ -135,11 +123,6 @@ def logout():
 	else:
 		return redirect(url_for('firstPage'))
 
-'''
-
-exa = session.query(Paths).filter_by(id=3).first()
-print(exa.id, exa.directorio, exa.usuarioId)
-'''
 
 @app.route('/configs/<int:id>', methods=['GET', 'POST'])
 def configs(id):
@@ -149,7 +132,6 @@ def configs(id):
 		correo = correo.email
 		errormensaje = "Error al validar las contraseñas"
 		rutadir = session.query(Paths).filter_by(usuarioId = id).first()
-		
 		
 		if request.method == 'GET':	
 			if rutadir is None:
@@ -161,31 +143,35 @@ def configs(id):
 			mail = mail.email
 			return render_template('configs.html', username=username, email=correo, rutadir=rutadir, id=id)
 		if request.method == 'POST':
-			if request.form.get('guardarbtn'):
 			
-				users = request.form['nombreUsuario']
-				passw = request.form['passwordnew']
-				mail = request.form['mail']
+			if request.form['guardarbtn'] == 'btnvalue':
+				userscamp = request.form['nombreUsuario']
+				passwcamp = request.form['passwordnew']
+				mailcamp = request.form['mail']
+				
 				user = session.query(User).filter_by(id = id).first()
 				if user and valid_pw(request.form['nombreUsuario'],
 										request.form['password'],
 										user.pw_hash):
 					if request.form['passwordnew'] != request.form['passwordrepeat']:
+					
 						return render_template('configs.html', username=username, errormensaje = errormensaje, email=correo, id=id)
 						
 					else:
-						pw_hash = make_pw_hash(users, passw)
-						session.query(User).filter_by(id=id).update(dict(username=users,pw_hash=pw_hash, email=mail))
+						pw_hash = make_pw_hash(userscamp, passwcamp)
+						session.query(User).filter_by(id=id).update(dict(username=userscamp,pw_hash=pw_hash, email=mailcamp))
 						session.commit()
 						del login_session['username']
 						return redirect(url_for('login'))
 				else:
 					return render_template('configs.html', username=username, errormensaje=errormensaje, email=correo, id=id)
 
+
 @app.route('/directorios', methods=['GET', 'POST'])
 def newdirectorios():
 	if 'username' in login_session:
 		username = login_session['username']
+		# Se obtiene la ruta actual
 		current_working_directory=os.getcwd()
 		if request.method == 'GET':
 			if 'win32' in sys.platform or 'win64' in sys.platform:
@@ -221,7 +207,7 @@ def firstPage():
 			if items is None:
 				return render_template('player.html', username=username, id_user=id_user, newmsg="No hay musica en este directorio")
 			else:
-				id_con = items.id
+				#id_con = items.id
 				CarpetPath = items.directorio
 				items = os.listdir(CarpetPath)		
 				items.sort()
@@ -249,10 +235,8 @@ def firstPage():
 				basedir = os.path.abspath(os.path.dirname(__file__))
 				file_path = os.path.join(basedir,'static','js', 'songList.js')
 				if listJson:
-					print("lleno")
 					variable = True
 				else:
-					print("vacio")
 					variable = False
 				if variable == True:	
 					with open(file_path,'w') as file:
@@ -276,19 +260,6 @@ def control():
 		username = login_session['username']
 		return render_template('playerControl.html', username=username)
 
-@app.route('/listacanciones', methods=['GET', 'POST'])
-def listacanciones():
-	if 'username' in login_session:
-		username = login_session['username']
-		return render_template('listacanciones.html', username=username)
-	
-
-
-@app.route('/canciones', methods=['GET', 'POST'])
-def canciones():
-	if 'username' in login_session:
-		username = login_session['username']
-		return render_template('canciones.html', username=username)
 
 @app.route('/playMusic/<path:filename>')
 def songRender(filename):
@@ -298,7 +269,7 @@ def songRender(filename):
 		consultaD = consultaD.id
 		consultaD2 = session.query(Paths).filter_by(usuarioId=consultaD).first() 
 		folderPath = consultaD2.directorio
-		#print(folderPath)
+
 		return send_from_directory(folderPath, filename)
 	
 	
@@ -335,11 +306,7 @@ def directorios(id):
 				session.commit()
 				return redirect(url_for('configs',id=id))
 
-currentuser = session.query(Paths).filter_by(usuarioId=5).all()
-for item in currentuser:
-	print(item.id)
-	print(item.directorio)
-	print(item.usuarioId)
+
 
 @app.route('/cd')
 def cd():
@@ -349,7 +316,7 @@ def cd():
 		os.chdir(request.args.get('path'))
 		currentuser = session.query(User).filter_by(username=username).first()
 		id = currentuser.id
-		# redirect to file manager
+		
 		return redirect(url_for('directorios', id=id))	
 
 @app.route('/cds')
@@ -357,7 +324,6 @@ def cds():
 	# run 'level up' command
 	os.chdir(request.args.get('path'))
 	
-	# redirect to file manager
 	return redirect('directorios')
 
 
@@ -380,7 +346,6 @@ def songsData(data):
 	nomEstado = data['estado']		
 	print(nomCancion,nomArtista,nomAlbum,nomEstado)
 	emit('receiveData', (nomCancion,nomArtista,nomAlbum,nomEstado), broadcast=True)
-	#send(data, broadcast=True)
 
 
 if __name__ == '__main__':

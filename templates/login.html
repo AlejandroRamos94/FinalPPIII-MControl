@@ -1,11 +1,26 @@
 {% extends "base.html" %}
+<!--LOAD PRE-REQUISITES FOR GOOGLE SIGN IN -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
 
+<script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+
+<!-- END PRE-REQUISITES FOR GOOGLE SIGN IN -->
 {% block title %}Iniciar sesión{% endblock %}
 
 {% block content %}
 <div class="container">
    <div class="row d-flex justify-content-md-center vh-100"> <!--justify center alinea el row al centro, vh-100 utiliza el 100% del contenido en pantalla, lo alinea verticalmente con flex  -->
        <div class="col-lg-5 col-md-7 col-12 align-self-center"> <!-- align-center alinea verticalmente al centro -->
+            {% if error %}
+            <div class="alert alert-danger" role="alert">
+                <div class="row">
+                  <div class="col-12">
+                    {{error}}
+                  </div>
+                </div> 
+              </div>
+            {% endif %}
+
             <div class="card">
                 <div class="card-body">
                     <h2 class="card-title text-center">Bienvenido</h2>
@@ -13,11 +28,11 @@
                     <form action="" method="post" class="card-text">
                         <div class="mb-3">
                             <label for="usuarioInput" class="form-label">Usuario</label>
-                            <input type="text" name="username" id="usuarioInput" class="form-control">
+                            <input type="text" name="username" id="usuarioInput" class="form-control" required>
                         </div>
                         <div class="mb-3">
                             <label for="passInput" class="form-label">Contraseña</label>
-                            <input type="password" name="password" id="passInput" class="form-control">
+                            <input type="password" name="password" id="passInput" class="form-control" required>
                         </div>
                         <div class="d-flex justify-content-md-center mt-4 btniniciar"> <!--mt controla el margen superior-->
                             <button type="submit" class="btn btn-primary ">Iniciar sesión</button>
@@ -25,6 +40,7 @@
                         <hr>
                         <p>Si no tenes cuenta podes <a href="/register">registrarte</a></p>
                         <p>Si queres iniciar como  <a href="/controLogin">controlador</a></p>
+
                     </form>
                 </div>
             </div>

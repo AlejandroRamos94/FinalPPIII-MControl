@@ -19,7 +19,7 @@ body {
 
 
 
-@media(max-width: 767px){
+@media(max-width: 575px){
 /*.btncontrol{
 
   display: inline-block;
@@ -187,16 +187,9 @@ body {
 
 }
 
-/*TABLETS*/
-@media(min-width: 768px) and (max-width: 991px){
-  .btn-controlsa{
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    padding: 10px;
-  }
-  .btncontrol{
-
+@media(min-width: 576px) and (max-width: 767px){
+  /*.btncontrol{
+  
     display: inline-block;
     padding: 3em;
     background-color: rgb(52, 167, 202);
@@ -209,23 +202,17 @@ body {
     transform: scale(1.1);
     color: rgb(255, 250, 250);
     text-shadow: 0px 0px 4px #ffffff;
+  }*//*
+  .usuarioIcon{
+    font-size: 5em;
+  }*/
+  .btnselect{
+    margin-top: 1em;
   }
-  
-  .btnpassong{
-  
-    margin: 1em;
-    padding: 2em;
-    background-color: rgb(52, 167, 202);
-    color:transparent;
-    border-radius: 50%;
-    border-color: transparent;
+  .volumeControls{
+    display: flex;
+      justify-content: center;
   }
-  .btnpassong:hover{
-    transform: scale(1.1);
-    color: rgba(255, 250, 250, 0);
-    text-shadow: 0px 0px 4px #ffffff;
-  }
-
   .volumeRange{
     -webkit-appearance: none;
     width: 65%;
@@ -243,19 +230,300 @@ body {
     cursor: pointer;
     box-shadow: -415px 0 0 400px #148F77;
   }
-  .duration-time{
-    position: absolute;
-    margin-left: 85%;
+  
+  
+  .iconlist{
+    font-size: 3em;
+    color: Dodgerblue;
   }
-  .current-time{
-    position: absolute;
-    margin-left: 0%;
+  .divcamps{
+    padding-right: 3em;
+    padding-top: 2em;
+  }
+  
+  .textocerrar{
+    text-align: right;
+  }
+  .btndesplegar{
+    font-size: 2em;
+    color: whitesmoke;
+    margin-top: 5%;
+  }
+  
+  .btndesplegar:hover{
+  
+    transform: scale(1.1);
+    color: rgb(255, 250, 250);
+    text-shadow: 0px 0px 4px #ffffff;
+  }
+  
+  .tablascr{
+    height: 22rem;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  
+    .boton{
+      display: block;
+    }
+  
+    
+    .divlogoout{
+      display: flex;
+      justify-content: center;
+    }
+  
+    .btniniciar{
+      display: flex;
+      justify-content: center;
+    }
+    .navlogo{
+      display: flex;
+      justify-content: center;
+    }
+  
+    .duration-time{
+      position: absolute;
+      margin-left: 85%;
+    }
+    .current-time{
+      position: absolute;
+      margin-left: 0%;
+    }
+    .barseparator{
+      display: none;
+    }
+    .song-timer{
+      margin-left: 4px;
+      font-size: 10px;
+      padding-bottom: 15px;
+  
+    }
+    .volumeControls{
+      font-size: 10px;
+    }
+  
+   
+    .btn-controlsa{
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      padding: 10px;
+    }
+  
+    .btncontrol{
+  
+      display: inline-block;
+      padding: 2em;
+      background-color: rgb(52, 167, 202);
+      color: rgb(255, 254, 254);
+      border-radius: 50%;
+      border-color: transparent;
+    }
+  
+    .btncontrol:hover{
+      transform: scale(1.1);
+      color: rgb(255, 250, 250);
+      text-shadow: 0px 0px 4px #ffffff;
+    }
+  
+    .btnpassong{
+  
+      margin: 1em;
+      padding: 1em;
+      background-color: rgb(52, 167, 202);
+      color:transparent;
+      border-radius: 50%;
+      border-color: transparent;
+    }
+    .btnpassong:hover{
+      transform: scale(1.1);
+      color: rgba(255, 250, 250, 0);
+      text-shadow: 0px 0px 4px #ffffff;
+    }
+    .centrado{
+      display: block;
+      margin: auto; 
+      width: 150px;
+      height: 150px;
+    }
+  
+    .duration{
+      margin-left: -24px;
+      margin-right: -9px;
+    }
+  
+  }
+  
+
+/*TABLETS*/
+@media(min-width: 768px) and (max-width: 991px){
+  
+  .btnselect{
+    margin-top: 1em;
   }
   .volumeControls{
     display: flex;
       justify-content: center;
   }
-
+  .volumeRange{
+    -webkit-appearance: none;
+    width: 65%;
+    outline: none;
+    height: 10px;
+    margin: 0 15px;
+    overflow: hidden;
+    border-radius: 10px;
+  }
+  .volumeRange::-webkit-slider-thumb{
+    -webkit-appearance: none;
+    height: 10px;
+    width: 15px;
+    background: #148F77;
+    cursor: pointer;
+    box-shadow: -415px 0 0 400px #148F77;
+  }
+  
+  
+  .iconlist{
+    font-size: 3em;
+    color: Dodgerblue;
+  }
+  .divcamps{
+    padding-right: 3em;
+    padding-top: 2em;
+  }
+  
+  .textocerrar{
+    text-align: right;
+  }
+  .btndesplegar{
+    font-size: 2em;
+    color: whitesmoke;
+    margin-top: 5%;
+  }
+  
+  .btndesplegar:hover{
+  
+    transform: scale(1.1);
+    color: rgb(255, 250, 250);
+    text-shadow: 0px 0px 4px #ffffff;
+  }
+  
+  .tablascr{
+    height: 22rem;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  
+    .boton{
+      display: block;
+    }
+  
+    
+    .divlogoout{
+      display: flex;
+      justify-content: center;
+    }
+  
+    .btniniciar{
+      display: flex;
+      justify-content: center;
+    }
+    .navlogo{
+      display: flex;
+      justify-content: center;
+    }
+  
+    .duration-time{
+      position: absolute;
+      margin-left: 92%;
+    }
+    .current-time{
+      position: absolute;
+      margin-left: 0%;
+    }
+    .barseparator{
+      display: none;
+    }
+    .song-timer{
+      margin-left: 4px;
+      font-size: 12px;
+      padding-bottom: 15px;
+  
+    }
+    .volumeControls{
+      font-size: 12px;
+    }
+    
+   
+    .btn-controlsa{
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      padding: 10px;
+    }
+  
+    .btncontrol{
+  
+      display: inline-block;
+      padding: 2em;
+      background-color: rgb(52, 167, 202);
+      color: rgb(255, 254, 254);
+      border-radius: 50%;
+      border-color: transparent;
+    }
+  
+    .btncontrol:hover{
+      transform: scale(1.1);
+      color: rgb(255, 250, 250);
+      text-shadow: 0px 0px 4px #ffffff;
+    }
+  
+    .btnpassong{
+  
+      margin: 1em;
+      padding: 1em;
+      background-color: rgb(52, 167, 202);
+      color:transparent;
+      border-radius: 50%;
+      border-color: transparent;
+    }
+    .btnpassong:hover{
+      transform: scale(1.1);
+      color: rgba(255, 250, 250, 0);
+      text-shadow: 0px 0px 4px #ffffff;
+    }
+    .centrado{
+      display: block;
+      margin: auto; 
+      width: 150px;
+      height: 150px;
+    }
+  
+    .duration{
+      margin-left: 9px;
+      margin-right: -9px;
+    }
+    .duration-slider {
+      -webkit-appearance: none;
+      width: 95%;
+      outline: none;
+      height: 10px;
+      margin: 0 15px;
+      overflow: hidden;
+      border-radius: 10px;
+    }
+    .duration-slider::-webkit-slider-thumb{
+      -webkit-appearance: none;
+      height: 10px;
+      width: 15px;
+      background: #148F77;
+      cursor: pointer;
+      box-shadow: -415px 0 0 400px #148F77;
+      
+    }
+  
 }
 
 /*ESCRITORIO*/

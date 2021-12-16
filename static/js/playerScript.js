@@ -15,11 +15,10 @@ const showVolume = document.querySelector("#show-volume");
 const volumeIcon = document.querySelector("#volume-icon");
 const currentVolume = document.querySelector("#volume");
 // duracion
-const trackCurrentTime = document.querySelector(".current-time");
-const trackDuration = document.querySelector(".duration-time");
+const tiempoActual = document.querySelector(".current-time");
+const duracionCancion = document.querySelector(".duration-time");
 const slider = document.querySelector(".duration-slider");
-// autoplay
-const autoPlayBtn = document.querySelector(".play-all");
+
 // playList
 const musicPlaylist = document.querySelector(".music-playlist");
 const pDiv = document.querySelector(".playlist-div");
@@ -38,20 +37,6 @@ let songIsPlaying = false;
 
 let btnhide = false;
 
-/*
-$(window).resize(function(){
-    if(window.innerWidth > 767) {
-      toogle.classList.remove('offcanvas','offcanvas-start');
-      toogle.removeAttribute('id');
-      toogle.removeAttribute('tabindex');
-      toogle.removeAttribute('aria-labelledby');
-      toogle.removeAttribute('style');
-     
-    }else if(window.innerWidth < 768){
-      toogle.classList.add('offcanvas','offcanvas-start');
-      toogle.setAttribute("id", "offcanvasExample");
-    }
-});*/
 
 function newfunc(){
   if (btnhide == false) {
@@ -63,14 +48,14 @@ function newfunc(){
 };
 
 function mostrar(){
-  columna.classList.remove('d-none','d-sm-block');
-  column2.classList.add('d-none','d-sm-block');
+  columna.classList.remove('d-none','d-sm-block', 'd-md-none', 'd-lg-block', 'd-sm-none', 'd-md-block');
+  column2.classList.add('d-none','d-sm-block','d-md-none', 'd-lg-block', 'd-sm-none', 'd-md-block');
   btnhide = true;
 };
 
 function ocultar(){
-  columna.classList.add('d-none','d-sm-block');
-  column2.classList.remove('d-none','d-sm-block');
+  columna.classList.add('d-none','d-sm-block', 'd-md-none', 'd-lg-block', 'd-sm-none', 'd-md-block');
+  column2.classList.remove('d-none','d-sm-block','d-md-none', 'd-lg-block', 'd-sm-none', 'd-md-block');
   btnhide = false;
 };
 
@@ -83,27 +68,24 @@ btnhideshow.addEventListener("click", newfunc); // reproducir y pausar
 play.addEventListener("click", justPlay); // reproducir y pausar
 next.addEventListener("click", nextSong); // siguiente cancion
 previous.addEventListener("click", prevSong); // anterior cancion
-//autoPlayBtn.addEventListener("click", autoPlayToggle);
 volumeIcon.addEventListener("click", muteSound); // mute
 currentVolume.addEventListener("change", changeVolume); // cambiar volumen
-slider.addEventListener("change", changeDuration); // cambiar duracion
+slider.addEventListener("change", progressDuracion); // cambiar duracion
 track.addEventListener("timeupdate", songTimeUpdate); // duracion automatica
 
-// Load Tracks
+// cargar pistas
 function loadTrack(indexTrack) {
     clearInterval(timer);
     resetSlider();
   
     track.src = '/playMusic/' + listSongs[indexTrack].cancion;
-    //trackImage.src = trackList[indexTrack].img;
     title.innerHTML = listSongs[indexTrack].titulo;
     artista.innerHTML = listSongs[indexTrack].artista;
     album.innerHTML = listSongs[indexTrack].album;
     
     track.load();
     
-    //let data = listSongs[indexTrack].titulo;
-    //socket.emit('songsData', data);
+
     timer = setInterval(updateSlider, 1000);
 }
 
@@ -179,6 +161,7 @@ function muteSound() {
     currentVolume.value = 0;
 }
 
+//recibir valor de volumen
 function changeVolumes(valor) {
   showVolume.innerHTML = valor;    
   track.volume = valor / 100;
@@ -196,22 +179,11 @@ function changeVolume() {
 
 
 // Change Duration
-function changeDuration() {
+function progressDuracion() {
     let sliderPosition = track.duration * (slider.value / 100);
     track.currentTime = sliderPosition;
 }
-/*
-// Auto Play
-function autoPlayToggle() {
-  if (autoplay == 0) {
-    autoplay = 1;
-    autoPlayBtn.style.background = "#db6400";
-  } else {
-    autoplay = 0;
-    autoPlayBtn.style.background = "#ccc";
-  }
-}
-*/
+
 // Reste Slider
 function resetSlider() {
     slider.value = 0;
@@ -260,11 +232,11 @@ function songTimeUpdate() {
       if (cursecs < 10) {
         cursecs = "0" + cursecs;
       }
-      trackCurrentTime.innerHTML = curmins + ":" + cursecs;
-      trackDuration.innerHTML = durmins + ":" + dursecs;
+      tiempoActual.innerHTML = curmins + ":" + cursecs;
+      duracionCancion.innerHTML = durmins + ":" + dursecs;
     } else {
-      trackCurrentTime.innerHTML = "00" + ":" + "00";
-      trackDuration.innerHTML = "00" + ":" + "00";
+      tiempoActual.innerHTML = "00" + ":" + "00";
+      duracionCancion.innerHTML = "00" + ":" + "00";
     }
 }
 
@@ -286,13 +258,14 @@ function displayTracks() {
   }
   playFromPlaylist();
 }
+
 displayTracks();
 
 // Play song from the playlist
 function playFromPlaylist() {
     pDivv.addEventListener("click", (e) => {
       if (e.target.classList.contains("single-song")) {
-        //alert(e.target.innerHTML);
+      
         const indexNum = listSongs.findIndex((item, index) => {
           if (item.titulo === e.target.innerHTML) {
             return true;
@@ -303,7 +276,7 @@ function playFromPlaylist() {
         indexTrack = indexNum;
         console.log(indexTrack);
         playSong();
-        //hidePlayList();
+     
       }
     });
 }
@@ -335,97 +308,3 @@ socket.on("volumeC", (valor) => {
 
 socket.send(songIsPlaying)
 
-function abrirUrl(url, contenedor){
-  $.get(url, {}, function(data){
-    $('#' + contenedor).html(data);
-  });
-}
-
-var dups = [];
-var arr = listSongs.filter(function(el){
-  if (dups.indexOf(el.titulo) == -1) {
-    dups.push(el.titulo);
-    return true;
-  }
-  return false;
-});
-
-function displaySongs(albumNombre) {
-  let counters = 1;
-  let pDivv = document.querySelector(".tabla-body");
-  for (let i = 0; i < arr.length; i++){
-    if (arr[i].album == albumNombre){
-        console.log(arr[i].titulo);
-                //let divv = document.createElement("tbody");
-      let diva = document.createElement("tr");
-                //div.classList.add("playlist-s");
-      diva.classList.add("playlist-sr");
-      diva.innerHTML = `
-          <th class="song-index">${counters++}</th>
-          <td class="single-song">${arr[i].titulo}</td>
-      `;
-       pDivv.appendChild(diva);
-    }
-      
-  }
-  //playFromPlaylist();   
-}
-
-  
-  
-
-
-/*
-socket.on('message', function(msg){
-    console.log(msg);
-    if (msg == true) {
-        console.log("se esta reproduciendo")
-        playSong();
-    } else if (msg == false) {
-        pauseSong();
-    }
-    
- });
-*/
-
-
-//play.addEventListener('click', () => (Playing_song ? pauseSong() : playSong()))
-/*
-$('#play').on('click',function(){
-    socket.send(songIsPlaying);   
- });/*
-
-
-
-function loadSong(listSongs){
-    title.textContent = listSongs.cancion;
-    audio.src = '/playMusic/' + listSongs.cancion;
-}
-
-let i = 0;
-loadSong(listSongs[i]);
-
-function prevSong(){
-    i--;
-    if (i < 0){
-        i= listSongs.length - 1;
-    }
-    loadSong(listSongs[i]);
-    playSong();
-    
-}
-
-prev.addEventListener('click',prevSong);
-
-
-function nextSong(){
-    i++;
-    if (i > listSongs.length - 1){
-        i= 0;
-    }
-    loadSong(listSongs[i]); 
-    playSong();
-    
-}
-
-next.addEventListener('click',nextSong);*/

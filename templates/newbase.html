@@ -18,7 +18,10 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container-fluid">
           <div class="navlogo">
-            <a class="navbar-brand" href="#">Navbar</a>
+            <a class="navbar-brand" href="#">
+              <img src="/static/images/IconMusic.png" alt="" width="30" height="24">
+            </a>
+            <a class="navbar-brand" href="/">Inicio</a>
           </div>
           
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,7 +39,11 @@
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                   <li><h6 class="text-center">{{username}}</h6></li>
                   <li><hr class="dropdown-divider"></li>
-                  <li><a class="dropdown-item text-end" href="/configs/{{id_user}}">Configuraciones<i class="fas fa-cog ms-2"></i></a></li>                 
+                  {% if newmsg %}
+                  <li><a class="dropdown-item text-end disabled" href="/configs/{{id_user}}">Configuraciones<i class="fas fa-cog ms-2"></i></a></li>
+                  {% else %}
+                  <li><a class="dropdown-item text-end" href="/configs/{{id_user}}">Configuraciones<i class="fas fa-cog ms-2"></i></a></li>
+                  {% endif %}
                   <li><a class="dropdown-item text-end" data-bs-toggle="modal" data-bs-target="#exampleModal" href="#">Cerrar sesión<i class="fas fa-sign-out-alt ms-2"></i></a></li>
                 </ul>
               </li>
@@ -93,9 +100,9 @@
     </div>
     <div class="col-lg-2 col-12">
       <div class="song-timer">
-        <span class="current-time text-light">00:12</span>
+        <span class="current-time text-light">00:00</span>
         <span class="text-light barseparator">/</span>
-        <span class="duration-time text-light">04:10</span>
+        <span class="duration-time text-light">00:00</span>
       </div>
     </div>
     <div class="col-12 col-lg-3">
