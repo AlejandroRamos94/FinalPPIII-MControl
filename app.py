@@ -10,10 +10,6 @@ from dbtables import Base, User, Paths
 import random
 import string
 import json
-import httplib2
-import hashlib
-import requests
-
 import os, json
 from tinytag import TinyTag
 
@@ -24,7 +20,7 @@ socketio = SocketIO(app)
 
 
 
-# Connect to Database and create database session
+# conectar a la base de datos y crear la sesion
 engine = create_engine('postgresql://alermpp:ramoscpii@localhost/usuarios')
 Base.metadata.bind = engine
 
@@ -192,7 +188,6 @@ def newdirectorios():
 			return redirect(url_for('firstPage'))
 
 @app.route('/', methods=['GET', 'POST'])
-#@app.route('/principal/', methods=['GET','POST'])
 def firstPage():
 	if 'username' in login_session:	
 		username = login_session['username']
@@ -201,8 +196,7 @@ def firstPage():
 		listJson = []	
 		itemsongs = []
 		items = session.query(Paths).filter_by(usuarioId=id_user).first()
-
-		
+	
 		if request.method == 'GET':
 			if items is None:
 				return render_template('player.html', username=username, id_user=id_user, newmsg="No hay musica en este directorio")

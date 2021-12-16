@@ -69,7 +69,6 @@
 function changeVolume() {
     showVolume.innerHTML = currentVolume.value;
     newVol = currentVolume.value;
-    //track.volume = currentVolume.value / 100;
     sockets.emit("volumeC", newVol);
 }
 
